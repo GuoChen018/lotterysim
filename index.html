@@ -1,0 +1,303 @@
+<!-- URL: -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Internal stylesheet-->
+    <style>
+        * {
+            /* outline: solid 1px rgba(255, 0, 0, 0.61);  */
+            margin: 0;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 48px;
+            font-weight: 900;
+            font-style: italic;
+            display: block;
+            text-align: center;
+            background-color: #000;
+            background-size: cover;
+            background-position: center;
+            padding: 40px;
+            margin: 0px;
+        }
+
+        h2 {
+            font-size: 36px;
+            margin-bottom: 12px;
+            margin-top: 40px;
+        }
+        
+        .info {
+            font-size: 20px;
+            width: 36%;
+            margin: 36px auto;
+
+        }
+
+        .myNumbers {
+            position: relative;
+        }
+
+        .num {
+            font-weight: 900;
+            font-size: 28px;
+            padding: 20px 32px;
+            margin-right: 20px;
+            box-sizing: border-box;
+            width: 100%;
+            outline: solid 3px #000; 
+        }
+
+        .num2 {
+            font-weight: 900;
+            background-color: #000;
+            color: #fff;
+            font-size: 28px;
+            padding: 20px 32px;
+            box-sizing: border-box;
+            width: 100%;
+            outline: solid 3px #000; 
+        }
+
+        p {
+            font-size: 18px;
+            margin-top: 0px;
+            margin-bottom: 40px;
+        }
+
+        .winningNumbers {
+            margin-top: 100px;
+            margin-bottom: 100px;
+        }
+
+        .result1 {
+            text-align: center;
+            background-color: #000;
+            color: #fff;
+            font-weight: 900;
+            font-style: italic;
+            outline: solid 2px #000; 
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .match, .luckyMatch {
+            margin-bottom: 40px;
+        }
+
+    </style>
+    <script language="javascript">
+
+        //Select my numbers by using Math.random()
+        //The maximum is inclusive and the minimum is inclusive
+        function getRandomIntInclusive(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1) + min); 
+        }
+        
+        //Initializations
+        let myNums = [];
+        let myLucky = 0; 
+
+        //Help with sorting 
+        function compareFunction (a,b) {
+            // 1. if result < 0 ... a comes first 
+            // 2. if result = 0 ... nothing will change 
+            // 3. if result > 0 ... b comes first 
+            return a-b;
+        }
+
+        //Populate the array with the randomly generated numbers 
+        function populateArray (arr, min, max) {
+            for (let i = 0; i < 5; i++) {
+                arr[i] = getRandomIntInclusive(min, max);
+            }
+
+            arr.sort(compareFunction);
+
+            return arr;
+        }
+        
+        //Initializations
+        let winNums = [];
+        let winLucky = 0; 
+
+        //1st prompt - ask for 5 numbers separated by space 
+        winNums = prompt("Enter five numbers (1-48), seperated by space. Don't add space at the end!").split(" ");
+        winNums.sort(compareFunction);
+
+        //Check the edge cases 
+        function checkNums(arr){
+
+            for (let i = 0; i < 5; i++) {
+
+                //Check if the user entered five numbrs 
+                if (arr.length != 5){
+                    alert("You didn't enter five numbers. Please re-enter.");
+                    arr = prompt("Enter five numbers (1-48), seperated by space. Don't add space at the end!").split(" ");
+                    arr.sort(compareFunction);
+                    i=0;
+                }
+
+                //Check if the user entered a number that's outside the given range
+                if (arr[i] > 48 || arr[i] < 1){
+                    alert("You entered numbers outside of the given range. Please re-enter.");
+                    arr = prompt("Enter five numbers (1-48), seperated by space. Don't add space at the end!").split(" ");
+                    arr.sort(compareFunction);
+                    i=0; 
+                }
+                
+                //Check if the user entered something that's not a number 
+                if (isNaN(arr[i])) {
+                    alert("You entered something that's not a number Please re-enter.");
+                    arr = prompt("Enter five numbers (1-48), seperated by space. Don't add space at the end!").split(" ");
+                    arr.sort(compareFunction);
+                    i=0; 
+                }
+            }
+            return arr; 
+        }
+
+        //2nd prompt - ask for winning lucky ball number 
+        function checkLucky(arr, num) {
+            num = prompt("Enter the winning lucky ball number (1-18): ");
+            
+            //Check if the user enters a valid number 
+            while (num == null || num < 1 || num > 18) {
+                alert("You entered an invalid number. Please re-enter.")
+                num = prompt("Enter the winning lucky ball number (1-18): ");  
+            }
+            return num; 
+        }
+
+        let numMatch = 0; 
+        let luck = false;   
+
+        //Check if the elements in two arrays match 
+        function matchNums(arr1, arr2, match) {
+            for (let i=0; i<5; i++){
+                for (let j=0; j<5; j++) {
+                    if (arr1[i] == arr2[j]) {
+                        //document.write("match!");
+                        match++; 
+                    }
+                }  
+            }
+
+            return match; 
+        }
+
+        //Check if the lucky ball numbers match 
+        function matchLucky(num1, num2, lucky) {
+            if (num1 == num2) {
+                lucky = true; 
+            }
+            
+            return lucky; 
+        }
+
+        //Calculate the payout
+        function calcPay (match, lucky, prize) {
+            if (lucky == true) {
+                if (match == 0) prize = "$4";
+                else if (match == 1) prize = "$6";
+                else if (match == 2) prize = "$25";
+                else if (match == 3) prize = "$150";
+                else if (match == 4) prize = "$5,000";
+                else if (match == 5) prize = "$7,000 a WEEK for LIFE";
+                else prize = "Nothing..."
+            }
+            else {
+                if (match == 2) prize = "$3";
+                else if (match == 3) prize = "$20";
+                else if (match == 4) prize = "$200";
+                else if (match == 5) prize = "$25,000 a YEAR for LIFE";
+                else prize = "Nothing..."
+            } 
+            
+            return prize; 
+        }
+    </script>
+</head>
+<body>
+    <h1>❔ Lucky for Life Simulation</h1>
+
+    <!-- Display information -->
+    <section class="info">
+        <!-- My Numbers + Lucky ball number -->
+        <div class="myNumbers">
+            <h2>🔲 My Numbers</h2>
+            <p>5 Numbers + 1 Lucky Ball Number ⬇</p>
+            <script language="javascript">
+                populateArray(myNums, 1, 48);
+                //myNums = [1, 2, 3, 4, 5];
+                
+                for (var i=0; i<5; i++) {
+                    document.write("<span class=\"num\">" + myNums[i] + "</span>");
+                }
+
+                myLucky = getRandomIntInclusive(1,18);
+                document.write("<span class=\"num2\">" + myLucky + "</span>");
+            </script>
+        </div>
+
+        <!-- Winning numbers + Winning lucky ball number -->
+        <div class="winningNumbers">
+            <h2>🔲 Winning Numbers</h2>
+            <p>5 Winning Numbers + 1 Lucky Ball Number ⬇ </p>
+            <script language="javascript">
+
+                var winNumsP = checkNums(winNums);
+                for (var i=0; i<5; i++) {
+                    document.write("<span class=\"num\">" + winNumsP[i] + "</span>");
+                }
+
+                var winLuckyP = checkLucky(winNums, winLucky); 
+                document.write("<span class=\"num2\">" + winLuckyP + "</span>");
+
+            </script>
+        </div>
+
+        <!-- Check if the arrays have matches -> display -->
+        <div class="match">
+            <h2>🔲 Results</h2>
+            <p>Check out your luck today ⬇</p>
+            <script language="javascript">
+                var numMatches = matchNums(myNums, winNumsP, numMatch);
+                document.write("<span class=\"result1\">" + numMatches + " numbers matched. " + "</span>");
+            </script>
+        </div>
+
+        <!-- Check if the lucky ball numbers match -> display -->
+        <div class="luckyMatch">
+            <script language="javascript">
+                var matchLuckys = matchLucky(myLucky, winLuckyP, luck);
+                if (matchLuckys == true) {
+                    document.write("<span class=\"result1\">" + "Congratulations! The lucky ball numbers matched!!!" + "</span>");
+                }
+                else {
+                    document.write("<span class=\"result1\">" + "Unfortunately, your lucky ball number did not match what we have..." + "</span>");
+                }
+            </script>
+        </div>
+
+        <!-- Calculate the price and display it-->
+        <div class="finalPrize">
+            <script language="javascript">
+                var prize; 
+                var finalPrize = calcPay (numMatches, matchLuckys, prize); 
+                document.write("<span class=\"result1\">" + "Here's what you get: " + finalPrize + "</span>");
+            </script>
+        </div>
+
+    </section>
+</body>
+</html>
